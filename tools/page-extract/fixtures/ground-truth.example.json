@@ -1,0 +1,34 @@
+{
+  "asin": "B0XXXXXXXX",
+  "title": "（作品名）",
+  "note": "このファイルをコピーして ground-truth.json を作り、実際の書き起こしを入れる。ja は自動評価では使わないが、訳文を目視確認するときの基準として埋めておくとよい。",
+  "pages": [
+    {
+      "index": 1,
+      "image": "captures/page-001.png",
+      "balloons": [
+        {
+          "order": 1,
+          "en": "I HAVE TO SAVE THE WORLD!",
+          "ja": "私がこの世界を救わなきゃ！"
+        },
+        {
+          "order": 2,
+          "en": "NOT IF I CAN HELP IT!",
+          "ja": "そうはさせない！"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "image": "captures/page-002.png",
+      "balloons": [
+        {
+          "order": 1,
+          "en": "MEANWHILE, ACROSS TOWN...",
+          "ja": "一方、街の反対側では……"
+        }
+      ]
+    }
+  ]
+}

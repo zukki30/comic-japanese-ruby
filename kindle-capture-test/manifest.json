@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Kindle Capture Test",
+  "version": "1.0.0",
+  "description": "Kindle画面のキャプチャ可否を確認",
+  "permissions": [
+    "activeTab",
+    "downloads"
+  ],
+  "action": {
+    "default_title": "Kindle画面をキャプチャ"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

@@ -4,12 +4,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリの現状
 
-**このリポジトリにはまだ実装コードが存在しません。** 現在の内容は `README.md`（1行）と `docs/DEV_NOTES.md`（設計・計画メモ）のみです。
-パッケージマネージャ、ビルド設定、テスト、リンターは未導入のため、ビルド／テスト用コマンドは存在しません。
+拡張機能本体は未実装です。現状あるのは以下の2つで、どちらも Phase 1（認識精度の検証）のためのものです。
+
+| 場所 | 役割 |
+|---|---|
+| `kindle-capture-test/` | 画面キャプチャの可否を確認した検証用拡張（MV3）。**検証済み・成功** |
+| `tools/page-extract/` | 画像からセリフ・読み順・訳文を抽出し、正解データと比較して精度を評価する CLI |
 
 作業を始める前に `docs/DEV_NOTES.md` を読むこと。これが唯一の仕様・計画ドキュメントであり、採用方式と未決事項の両方が記録されています。
 
-初めてコードを足すとき（スキャフォールド時）は、導入したパッケージマネージャ・ビルド・テスト・リンターのコマンドをこのファイルに追記すること。
+**拡張機能本体を書き始めるときは、そのビルド・テスト・リンターのコマンドをこのファイルに追記すること。**
+
+## コマンド
+
+`tools/page-extract/` で実行します。Node 23.6 以上が必要（TypeScript をビルドなしで直接実行するため）。画像の縮小に macOS の `sips` を使います。
+
+```bash
+cd tools/page-extract
+npm install
+
+npm run typecheck                 # tsc --noEmit
+npm run selftest                  # 評価ロジックの自己テスト（API キー不要）
+npm run extract -- --image captures/page-001.png --index 1
+npm run evaluate -- --truth fixtures/ground-truth.json --pred out
+```
+
+- `npm run extract` は `ANTHROPIC_API_KEY`（または `ant auth login` 済みのプロファイル）が必要
+- `npm run evaluate` は完了条件を満たせば終了コード 0、満たさなければ 1 を返す
+- 自己テストは API を呼ばないので、評価ロジックを触ったら必ず走らせること。**この指標が Phase 1 の go / no-go を決めるため、静かに壊れると判断そのものが狂う**
+- 単一テストの実行手段はまだ用意していません（`src/selftest.ts` は一括実行のみ）
+
+オプションの詳細は `tools/page-extract/README.md` を参照。
 
 ## プロダクトの目的
 
@@ -42,8 +67,9 @@ Tesseract.js は第一候補から外しています（理由は `docs/DEV_NOTES
 
 `docs/DEV_NOTES.md` のフェーズ順を守ること。先のフェーズを先取りして実装しない。
 
-- 完了：Manifest V3 の検証用拡張機能で Kindle for Web の画面を PNG 取得できることを確認済み（`docs/DEV_NOTES.md` 6章に `manifest.json` / `background.js` の全文あり。リポジトリ内にはまだファイル化されていない — Phase 1 で `kindle-capture-test/` としてコミットする）。
-- **次（Phase 1）：セリフ認識・翻訳の精度検証** — まず 10 ページ分の正解データを手打ちで作り、Vision 対応 LLM の出力と比較して数値評価する。完了条件は定量的に定義済み（CER < 10%、手直し不要 80% 以上 など）。この段階では画面への表示は実装しない。
+- 完了：Manifest V3 の検証用拡張機能（`kindle-capture-test/`）で Kindle for Web の画面を PNG 取得できることを確認済み。
+- 完了：Phase 1 の検証 CLI（`tools/page-extract/`）を実装済み。抽出・評価・自己テストが動く。
+- **次（Phase 1 の残り）：実データでの精度検証** — 10 ページ分のキャプチャを集め、正解データを手で書き起こし、実 API で抽出して数値評価する。ここはユーザーの作業が必要（コミック画像と API キー）。この段階では画面への表示は実装しない。
 - 以降：Phase 2 対訳パネル表示（ここで「実際に読める」状態になる）→ Phase 3 番号マーカー（Phase 2 で不便だと判断した場合のみ）→ Phase 4 自動化（ページ送り検出・キャッシュ・用語集・Batch API）。
 
 未検証のまま残っている前提（実装時に確認が必要）:
