@@ -1,0 +1,13 @@
+node_modules/
+
+# Phase 1 の検証で生成されるもの
+tools/page-extract/out/
+tools/page-extract/captures/
+tools/page-extract/fixtures/ground-truth.json
+tools/page-extract/fixtures/glossary.json
+
+# コミックのキャプチャ画像は著作物なのでコミットしない
+*.png
+!kindle-capture-test/**/*.png
+
+.DS_Store

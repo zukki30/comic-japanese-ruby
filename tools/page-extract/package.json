@@ -1,0 +1,24 @@
+{
+  "name": "page-extract",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Phase 1: コミックページ画像からセリフ・読み順・訳文を抽出し、正解データと比較して精度を評価する",
+  "engines": {
+    "node": ">=23.6"
+  },
+  "scripts": {
+    "extract": "node src/extract.ts",
+    "evaluate": "node src/evaluate.ts",
+    "selftest": "node src/selftest.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.10.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  }
+}
