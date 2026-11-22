@@ -262,71 +262,24 @@ overlayCssX = bboxPixelX / scale
 
 ## 6. 作成済みの検証用Chrome拡張機能
 
-> 注：以下のコードはこのドキュメント内にのみ存在し、リポジトリにはまだファイルとして存在しない。Phase 1で `kindle-capture-test/` として実際にコミットし、ここからはリンクに置き換える。
+画面キャプチャの可否を確認するための検証用拡張機能。実ファイルは [`kindle-capture-test/`](../kindle-capture-test/) にある。
 
 ### ディレクトリ構成
 
 ```text
 kindle-capture-test/
 ├── manifest.json
-└── background.js
+├── background.js
+└── README.md
 ```
 
-### manifest.json
+- [`manifest.json`](../kindle-capture-test/manifest.json) — Manifest V3の設定。permissionsは `activeTab` と `downloads` のみ
+- [`background.js`](../kindle-capture-test/background.js) — アイコンのクリックで `chrome.tabs.captureVisibleTab()` を呼び、PNGをダウンロードする
+- [`README.md`](../kindle-capture-test/README.md) — 読み込み手順と制約
 
-```json
-{
-  "manifest_version": 3,
-  "name": "Kindle Capture Test",
-  "version": "1.0.0",
-  "description": "Kindle画面のキャプチャ可否を確認",
-  "permissions": [
-    "activeTab",
-    "downloads"
-  ],
-  "action": {
-    "default_title": "Kindle画面をキャプチャ"
-  },
-  "background": {
-    "service_worker": "background.js"
-  }
-}
-```
+**検証結果：成功**（漫画の画像と英語のセリフが判読可能な状態で取得できることを確認済み）
 
-### background.js
-
-```javascript
-chrome.action.onClicked.addListener(async (tab) => {
-  try {
-    const dataUrl = await chrome.tabs.captureVisibleTab(
-      tab.windowId,
-      { format: "png" }
-    );
-
-    await chrome.downloads.download({
-      url: dataUrl,
-      filename: "kindle-capture-test.png",
-      saveAs: true
-    });
-
-    console.log("キャプチャ成功");
-  } catch (error) {
-    console.error("キャプチャ失敗:", error);
-  }
-});
-```
-
-### 検証手順
-
-1. Chromeで `chrome://extensions` を開く
-2. デベロッパーモードを有効化する
-3. 検証用拡張機能を読み込む
-4. Kindle for Webで英語コミックを開く
-5. Chrome拡張機能のアイコンをクリックする
-6. PNGファイルを保存する
-7. 漫画の画像と英語のセリフが正常に取得できているか確認する
-
-**検証結果：成功**
+検証手順は [`kindle-capture-test/README.md`](../kindle-capture-test/README.md) を参照。
 
 ### 本番で必要になるpermissions
 
